@@ -30,9 +30,11 @@ module.exports = {
           success: true,
           message: 'User Created Successfully',
           data: {
+            id: createdUser.id,
             name: createdUser.name,
             email: createdUser.email,
             token,
+            role: createdUser.role,
           },
         });
       }
@@ -72,6 +74,8 @@ module.exports = {
           name: user.name,
           email: user.email,
           token,
+          role: user.role,
+          id: user.id,
         },
       });
     } catch (err) {

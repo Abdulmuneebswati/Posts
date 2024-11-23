@@ -21,7 +21,7 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       url: {
-        type: Sequelize.BLOB('long'),
+        type: Sequelize.TEXT('long'),
         allowNull: false,
       },
       archive: {

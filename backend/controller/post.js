@@ -28,7 +28,6 @@ module.exports = {
           content,
           userId: id,
         });
-        console.log(base64Image);
 
         if (base64Image) {
           await Image.create({
@@ -53,10 +52,15 @@ module.exports = {
       next(err);
     }
   },
-  getAllPosts: async (req, res, next) => {
+  get: async (req, res, next) => {
     try {
-      const posts = await Post.findAll({
-        whereArchiveClause,
+      const postId = req.post.id;
+
+      const posts = await Post.findOne({
+        where: {
+          id: postId,
+          archive: false,
+        },
         include: [
           {
             model: Image,
@@ -67,6 +71,58 @@ module.exports = {
         attributes: ['id', 'title', 'content', 'userId', 'status', 'createdAt'],
         order: [['createdAt', 'DESC']],
       });
+      res.status(200).json({
+        success: true,
+        data: posts,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getAllPosts: async (req, res, next) => {
+    try {
+      const posts = await Post.findAll({
+        where: {
+          archive: false,
+        },
+        include: [
+          {
+            model: Image,
+            attributes: ['url'],
+            whereArchiveClause,
+          },
+        ],
+        attributes: ['id', 'title', 'content', 'userId', 'status', 'createdAt'],
+        order: [['createdAt', 'DESC']],
+      });
+
+      res.status(200).json({
+        success: true,
+        data: posts,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getMyPosts: async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+
+      const posts = await Post.findAll({
+        where: {
+          userId: Number(userId),
+          archive: false,
+        },
+        include: [
+          {
+            model: Image,
+            attributes: ['url'],
+          },
+        ],
+        attributes: ['id', 'title', 'content', 'userId', 'status', 'createdAt'],
+        order: [['createdAt', 'DESC']],
+      });
+      console.log(posts, '))))))))');
 
       res.status(200).json({
         success: true,

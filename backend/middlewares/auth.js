@@ -5,13 +5,17 @@ const config = require('../config');
 const auth = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    
-    const token = req.headers['authorization'];
-    
+    console.log(userId, 'userId');
+
+    let token = req.headers['authorization'];
+
     if (!userId || !token) {
       return next(new ApiError(400, 'User ID and token are required'));
     }
-    
+
+    if (token.split(' ')[0].toLowerCase() === 'bearer') {
+      token = token.split(' ')[1];
+    }
 
     const decoded = jwt.verify(token, config.get('signInJwtSecret'));
 
@@ -20,7 +24,6 @@ const auth = async (req, res, next) => {
     if (!user) {
       return next(new ApiError(404, 'User not found'));
     }
-    
 
     if (decoded.id.toString() !== userId) {
       return next(new ApiError(403, 'User ID does not match token'));

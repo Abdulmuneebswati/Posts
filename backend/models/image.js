@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Image = sequelize.define('Image', {
     url: {
-      type: DataTypes.BLOB('long'),
+      type: DataTypes.TEXT('long'),
       allowNull: false,
     },
     archive: {
